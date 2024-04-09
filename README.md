@@ -1,13 +1,20 @@
-# HBV202GAssignment8
-A Maven project skeleton. The provided Maven POM sets the Java version to 17.
+# Library System
+An implementation of a library system to be tested using JUnit4 with a simple textual user interface.
 
-All classes need to be located in Java package `is.hi.hbv202g.assignment8`.
+This project is a Maven project, i.e. it uses the standard Maven project structure that your IDE hopefully understands when you `git clone` it. The provided Maven POM includes the JUnit4 dependency. The POM sets the Java version to 17: you may need to downgrade it if you use an older JDK.
 
-Class and method names of the submitted solution need to be **exactly** the same 
-as in the UML class diagram in the assignment PDF. 
+Both the implementation and the tests are in Java package `is.hi.hbv202g.ass5`,
+but in the usual separate Maven `src` directories:
 
-If you like, you can import from project directory `UML` the file 
-`library_system.uxf` into the online UML editor https://www.umletino.com/ 
-and copy/paste from there class and method names: click on a class and then, 
-you can copy from the `properties` window on the right hand side class 
-and method names.
+- `src/main/java`:
+    - `IntStack.java`: Implementation of a simple stack.
+    - `IntStackMain.java`: A class with a main method demonstrating some sample usage of the stack.
+
+- `src/test/java`:
+    - `IntStackTest.java`: A class containing JUnit4 sample test cases for the `IntStack` class.
+
+Maven:
+
+- `mvn compile` compiles all implementation classes.
+- `mvn test` runs all test cases (i.e. all classes with a name that either starts with `Test` or ends with `Test`, `Tests`, or `TestCase`).
+
