@@ -104,4 +104,11 @@ public class LibrarySystem {
         }
         throw new UserOrBookDoesNotExistException("Returning not possible");
     }
+
+    public void returnOmnibus(User user, Omnibus omnibus) throws UserOrBookDoesNotExistException{
+        for(Book book : omnibus.getVolumes()){
+            returnBook(user, book);
+        }
+        omnibus.isAvailable = true;
+    }
 }

@@ -24,6 +24,7 @@ public class Main {
             System.out.println("9: Borrow a book collection");
             System.out.println("10: Extend lending");
             System.out.println("11: Return book");
+            System.out.println("12: Return book collection");
             System.out.println("0: Exit");
             System.out.print("Enter your choice: ");
 
@@ -63,6 +64,9 @@ public class Main {
                     break;
                 case 11:
                     returnBookInterface();
+                    break;
+                case 12:
+                    returnOmnibusInterface();
                     break;
                 case 0:
                     running = false;
@@ -218,5 +222,15 @@ public class Main {
         } catch (UserOrBookDoesNotExistException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void returnOmnibusInterface() throws UserOrBookDoesNotExistException {
+        System.out.print("Enter user name: ");
+        String userName = scanner.nextLine();
+        User user = newLibrarySystem.findUserByName(userName);
+        System.out.print("Enter title of the book collection: ");
+        String omnibusTitle = scanner.nextLine();
+        Omnibus omnibus = newLibrarySystem.findOmnibusByTitle(omnibusTitle);
+        newLibrarySystem.returnOmnibus(user, omnibus);
     }
 }
