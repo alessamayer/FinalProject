@@ -29,3 +29,6 @@ Maven:
 Jar File:
 - `build.sh`
 - `run.sh`
+
+UML diagram:
+- `UML/UML_diagram_updated.pdf`
