@@ -9,19 +9,21 @@ public class Main {
     private static final LibrarySystem newLibrarySystem = new LibrarySystem();
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) throws UserOrBookDoesNotExistException, EmptyAuthorListException {
+    public static void main(String[] args) throws UserOrBookDoesNotExistException, EmptyAuthorListException, EmptyVolumeListException {
         boolean running = true;
         while (running) {
             System.out.println("Welcome to the Library System");
             System.out.println("1: Add a book with author(s)");
-            System.out.println("2: Add a student user");
-            System.out.println("3: Add a faculty member user");
-            System.out.println("4: Find book by title");
-            System.out.println("5: Find user by name");
-            System.out.println("6: Borrow a book");
-            System.out.println("7: Extend lending");
-            System.out.println("8: Return book");
-            System.out.println("9: Exit");
+            System.out.println("2: Add a book collection. (Please enter books beforehand)");
+            System.out.println("3: Add a student user");
+            System.out.println("4: Add a faculty member user");
+            System.out.println("5: Find book by title");
+            System.out.println("6: Find book collection by title");
+            System.out.println("7: Find user by name");
+            System.out.println("8: Borrow a book");
+            System.out.println("9: Extend lending");
+            System.out.println("10: Return book");
+            System.out.println("0: Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -32,31 +34,37 @@ public class Main {
                     addBookInterface();
                     break;
                 case 2:
-                    addStudentUserInterface();
+                    addOmnibusInterface();
                     break;
                 case 3:
-                    addFacultyMemberUserInterface();
+                    addStudentUserInterface();
                     break;
                 case 4:
-                    findBookInterface();
+                    addFacultyMemberUserInterface();
                     break;
                 case 5:
-                    findUserInterface();
+                    findBookInterface();
                     break;
                 case 6:
-                    borrowBookInterface();
+                    findOmnibusInterface();
                     break;
                 case 7:
-                    extendLendingInterface();
+                    findUserInterface();
                     break;
                 case 8:
-                    returnBookInterface();
+                    borrowBookInterface();
                     break;
                 case 9:
+                    extendLendingInterface();
+                    break;
+                case 10:
+                    returnBookInterface();
+                    break;
+                case 0:
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                    System.out.println("Invalid choice. Please enter a number between 1 and 9.");
             }
         }
     }
@@ -76,6 +84,27 @@ public class Main {
         }
         newLibrarySystem.addBookWithTitleAndAuthorList(bookTitle, authors);
         System.out.println("Book added successfully.");
+    }
+
+    private static void addOmnibusInterface() throws EmptyVolumeListException {
+        ArrayList<Book> volumes = new ArrayList<Book>();
+        System.out.print("Enter book collection title: ");
+        String omnibusTitle = scanner.nextLine();
+        System.out.print("Enter number of books in the collection: ");
+        int numberOfBooks = scanner.nextInt();
+        scanner.nextLine(); // Consume newline left-over
+        for (int i = 0; i < numberOfBooks; i++) {
+            System.out.println("Enter book title: ");
+            String bookTitle = scanner.nextLine();
+            Book book = newLibrarySystem.findBookByTitle(bookTitle);
+            if (book == null) {
+                System.out.println("Book not found.");
+                return;
+            }
+            volumes.add(book);
+        }
+        newLibrarySystem.addOmnibus(omnibusTitle, volumes, true);
+        System.out.println("Omnibus added successfully.");
     }
 
     private static void addStudentUserInterface() {
@@ -106,6 +135,17 @@ public class Main {
         }
     }
 
+    private static void findOmnibusInterface() {
+        System.out.print("Enter omnibus title: ");
+        String omnibusTitle = scanner.nextLine();
+        Omnibus omnibus = newLibrarySystem.findOmnibusByTitle(omnibusTitle);
+        if (omnibus == null) {
+            System.out.println("Omnibus not found.");
+        } else {
+            System.out.println("Omnibus exists in library");
+        }
+    }
+
     private static void findUserInterface() {
         System.out.print("Enter user name: ");
         String userName = scanner.nextLine();
@@ -113,7 +153,7 @@ public class Main {
         if (user == null) {
             System.out.println("User not found.");
         } else {
-            System.out.println("User already exists in library");
+            System.out.println("User exists in library");
         }
     }
 
@@ -122,15 +162,6 @@ public class Main {
         String userName = scanner.nextLine();
         System.out.print("Enter book title: ");
         String bookTitle = scanner.nextLine();
-
-        if (newLibrarySystem.findUserByName(userName) == null) {
-            System.out.println("User not found.");
-            return;
-        }
-        if (newLibrarySystem.findBookByTitle(bookTitle) == null) {
-            System.out.println("Book not found.");
-            return;
-        }
 
         try {
             User user = newLibrarySystem.findUserByName(userName);

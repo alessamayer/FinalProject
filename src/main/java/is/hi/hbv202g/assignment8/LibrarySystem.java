@@ -6,11 +6,13 @@ import java.util.List;
 
 public class LibrarySystem {
     private final List<Book> books;
+    private final List<Omnibus> omnibuses;
     private final List<Lending> lendings;
     private final List<User> users;
 
     LibrarySystem(){
         books = new ArrayList<Book>();
+        omnibuses = new ArrayList<Omnibus>();
         lendings = new ArrayList<Lending>();
         users = new ArrayList<User>();
     }
@@ -23,9 +25,13 @@ public class LibrarySystem {
         Book newBook = new Book(title, authors);
         books.add(newBook);
     }
-    public void addBookWithTitleAndNameOfSingleAuthor(String title, String authorName){
-        Book newBook = new Book(title, authorName);
-        books.add(newBook);
+
+    public void addOmnibus(String title, List<Book> volumes, boolean isAvailable) throws EmptyVolumeListException{
+        if (volumes.isEmpty()){
+            throw new EmptyVolumeListException("Empty volume list");
+        }
+        Omnibus newOmnibus = new Omnibus(title, volumes, isAvailable);
+        omnibuses.add(newOmnibus);
     }
     public void addStudentUser(String name, boolean feePaid){
         Student newUser = new Student(name, feePaid);
@@ -39,6 +45,15 @@ public class LibrarySystem {
         for (Book book : books){
             if (book.getTitle().equals(title)){
                 return book;
+            }
+        }
+        return null;
+    }
+
+    public Omnibus findOmnibusByTitle(String title) {
+        for (Omnibus omnibus : omnibuses){
+            if (omnibus.getTitle().equals(title)){
+                return omnibus;
             }
         }
         return null;
@@ -63,6 +78,14 @@ public class LibrarySystem {
         else {
             throw new UserOrBookDoesNotExistException("User does not exist");
         }
+    }
+
+    public void borrowOmnibus(User user, Omnibus omnibus) throws UserOrBookDoesNotExistException{
+        for(Book book : omnibus.getVolumes()){
+            Lending newLending = new Lending(book, user);
+            lendings.add(newLending);
+        }
+        omnibus.isAvailable = false;
     }
     public void extendLending(FacultyMember facultyMember, Book book, LocalDate newDueDate) throws UserOrBookDoesNotExistException {
         for (Lending lending : lendings){
