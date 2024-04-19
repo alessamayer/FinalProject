@@ -6,18 +6,22 @@ import java.util.Scanner;
 
 
 public class Main {
-    private static LibrarySystem myLibrarySystem = new LibrarySystem();
-    private static Scanner scanner = new Scanner(System.in);
+    private static final LibrarySystem newLibrarySystem = new LibrarySystem();
+    private static final Scanner scanner = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        setupLibrary(); // Setup your library with books and users
-
+    public static void main(String[] args) throws UserOrBookDoesNotExistException, EmptyAuthorListException {
         boolean running = true;
         while (running) {
             System.out.println("Welcome to the Library System");
-            System.out.println("1. Borrow a book");
-            System.out.println("2. Return a book");
-            System.out.println("3. Exit");
+            System.out.println("1: Add a book with author(s)");
+            System.out.println("2: Add a student user");
+            System.out.println("3: Add a faculty member user");
+            System.out.println("4: Find book by title");
+            System.out.println("5: Find user by name");
+            System.out.println("6: Borrow a book");
+            System.out.println("7: Extend lending");
+            System.out.println("8: Return book");
+            System.out.println("9: Exit");
             System.out.print("Enter your choice: ");
 
             int choice = scanner.nextInt();
@@ -25,12 +29,30 @@ public class Main {
 
             switch (choice) {
                 case 1:
-                    borrowBookInterface();
+                    addBookInterface();
                     break;
                 case 2:
-                    returnBookInterface();
+                    addStudentUserInterface();
                     break;
                 case 3:
+                    addFacultyMemberUserInterface();
+                    break;
+                case 4:
+                    findBookInterface();
+                    break;
+                case 5:
+                    findUserInterface();
+                    break;
+                case 6:
+                    borrowBookInterface();
+                    break;
+                case 7:
+                    extendLendingInterface();
+                    break;
+                case 8:
+                    returnBookInterface();
+                    break;
+                case 9:
                     running = false;
                     break;
                 default:
@@ -39,8 +61,60 @@ public class Main {
         }
     }
 
-    private static void setupLibrary() {
-        // Add your initial library setup here (books, users, etc.)
+    private static void addBookInterface() throws EmptyAuthorListException {
+        System.out.print("Enter book title: ");
+        String bookTitle = scanner.nextLine();
+        System.out.print("Enter number of authors: ");
+        int numberOfAuthors = scanner.nextInt();
+        scanner.nextLine(); // Consume newline left-over
+        ArrayList<Author> authors = new ArrayList<Author>();
+        for (int i = 0; i < numberOfAuthors; i++) {
+            System.out.print("Enter author name: ");
+            String authorName = scanner.nextLine();
+            Author author = new Author(authorName);
+            authors.add(author);
+        }
+        newLibrarySystem.addBookWithTitleAndAuthorList(bookTitle, authors);
+        System.out.println("Book added successfully.");
+    }
+
+    private static void addStudentUserInterface() {
+        System.out.print("If fee is paid, enter user name: ");
+        String userName = scanner.nextLine();
+        boolean feePaid = true;
+        newLibrarySystem.addStudentUser(userName, feePaid);
+        System.out.println("User added successfully.");
+    }
+
+    private static void addFacultyMemberUserInterface() {
+        System.out.print("Enter user name: ");
+        String userName = scanner.nextLine();
+        System.out.print("Enter department: ");
+        String department = scanner.nextLine();
+        newLibrarySystem.addFacultyMemberUser(userName, department);
+        System.out.println("User added successfully.");
+    }
+
+    private static void findBookInterface() {
+        System.out.print("Enter book title: ");
+        String bookTitle = scanner.nextLine();
+        Book book = newLibrarySystem.findBookByTitle(bookTitle);
+        if (book == null) {
+            System.out.println("Book not found.");
+        } else {
+            System.out.println("Book exists in library");
+        }
+    }
+
+    private static void findUserInterface() {
+        System.out.print("Enter user name: ");
+        String userName = scanner.nextLine();
+        User user = newLibrarySystem.findUserByName(userName);
+        if (user == null) {
+            System.out.println("User not found.");
+        } else {
+            System.out.println("User already exists in library");
+        }
     }
 
     private static void borrowBookInterface() {
@@ -49,14 +123,34 @@ public class Main {
         System.out.print("Enter book title: ");
         String bookTitle = scanner.nextLine();
 
+        if (newLibrarySystem.findUserByName(userName) == null) {
+            System.out.println("User not found.");
+            return;
+        }
+        if (newLibrarySystem.findBookByTitle(bookTitle) == null) {
+            System.out.println("Book not found.");
+            return;
+        }
+
         try {
-            User user = myLibrarySystem.findUserByName(userName);
-            Book book = myLibrarySystem.findBookByTitle(bookTitle);
-            myLibrarySystem.borrowBook(user, book);
+            User user = newLibrarySystem.findUserByName(userName);
+            Book book = newLibrarySystem.findBookByTitle(bookTitle);
+            newLibrarySystem.borrowBook(user, book);
             System.out.println("Book borrowed successfully.");
         } catch (UserOrBookDoesNotExistException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void extendLendingInterface() throws UserOrBookDoesNotExistException {
+        System.out.print("Enter user name: ");
+        String userName = scanner.nextLine();
+        User user = newLibrarySystem.findUserByName(userName);
+        System.out.print("Enter book title: ");
+        String bookTitle = scanner.nextLine();
+        Book book = newLibrarySystem.findBookByTitle(bookTitle);
+        newLibrarySystem.extendLending((FacultyMember) user, book, LocalDate.now().plusDays(30));
+        System.out.println("Lending extended successfully.");
     }
 
     private static void returnBookInterface() {
@@ -66,9 +160,9 @@ public class Main {
         String bookTitle = scanner.nextLine();
 
         try {
-            User user = myLibrarySystem.findUserByName(userName);
-            Book book = myLibrarySystem.findBookByTitle(bookTitle);
-            myLibrarySystem.returnBook(user, book);
+            User user = newLibrarySystem.findUserByName(userName);
+            Book book = newLibrarySystem.findBookByTitle(bookTitle);
+            newLibrarySystem.returnBook(user, book);
             System.out.println("Book returned successfully.");
         } catch (UserOrBookDoesNotExistException e) {
             System.out.println(e.getMessage());
