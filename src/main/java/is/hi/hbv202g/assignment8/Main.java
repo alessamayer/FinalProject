@@ -21,8 +21,9 @@ public class Main {
             System.out.println("6: Find book collection by title");
             System.out.println("7: Find user by name");
             System.out.println("8: Borrow a book");
-            System.out.println("9: Extend lending");
-            System.out.println("10: Return book");
+            System.out.println("9: Borrow a book collection");
+            System.out.println("10: Extend lending");
+            System.out.println("11: Return book");
             System.out.println("0: Exit");
             System.out.print("Enter your choice: ");
 
@@ -55,9 +56,12 @@ public class Main {
                     borrowBookInterface();
                     break;
                 case 9:
-                    extendLendingInterface();
+                    borrowOmnibusInterface();
                     break;
                 case 10:
+                    extendLendingInterface();
+                    break;
+                case 11:
                     returnBookInterface();
                     break;
                 case 0:
@@ -104,7 +108,7 @@ public class Main {
             volumes.add(book);
         }
         newLibrarySystem.addOmnibus(omnibusTitle, volumes, true);
-        System.out.println("Omnibus added successfully.");
+        System.out.println("Book collection added successfully.");
     }
 
     private static void addStudentUserInterface() {
@@ -168,6 +172,22 @@ public class Main {
             Book book = newLibrarySystem.findBookByTitle(bookTitle);
             newLibrarySystem.borrowBook(user, book);
             System.out.println("Book borrowed successfully.");
+        } catch (UserOrBookDoesNotExistException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void borrowOmnibusInterface() {
+        System.out.print("Enter user name: ");
+        String userName = scanner.nextLine();
+        System.out.print("Enter title of the book collection: ");
+        String omnibusTitle = scanner.nextLine();
+
+        try {
+            User user = newLibrarySystem.findUserByName(userName);
+            Omnibus omnibus = newLibrarySystem.findOmnibusByTitle(omnibusTitle);
+            newLibrarySystem.borrowOmnibus(user, omnibus);
+            System.out.println("Book collection borrowed successfully.");
         } catch (UserOrBookDoesNotExistException e) {
             System.out.println(e.getMessage());
         }

@@ -82,8 +82,7 @@ public class LibrarySystem {
 
     public void borrowOmnibus(User user, Omnibus omnibus) throws UserOrBookDoesNotExistException{
         for(Book book : omnibus.getVolumes()){
-            Lending newLending = new Lending(book, user);
-            lendings.add(newLending);
+            borrowBook(user, book);
         }
         omnibus.isAvailable = false;
     }
