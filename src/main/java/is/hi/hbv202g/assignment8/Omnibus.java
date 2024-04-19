@@ -33,7 +33,7 @@ public class Omnibus {
      *
      * @return the title
      */
-    public Object getTitle() {
+    public String getTitle() {
         return title;
     }
 }
