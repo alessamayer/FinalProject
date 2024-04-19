@@ -24,4 +24,8 @@ Maven:
 
 - `mvn compile` compiles all implementation classes.
 - `mvn test` runs all test cases (i.e. all classes with a name that either starts with `Test` or ends with `Test`, `Tests`, or `TestCase`).
+- `mvn javadoc:javadoc` generates HTML from Javadoc comments.
 
+Jar File:
+- `build.sh`
+- `run.sh`
