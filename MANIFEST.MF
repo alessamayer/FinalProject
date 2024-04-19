@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Main-Class: is.hi.hbv202g.assignment8.Main
