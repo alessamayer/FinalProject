@@ -4,6 +4,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Main class.
+ * <p>
+ * This class shows the usage of the methods in the library system </p>
+ */
 
 public class Main {
     private static final LibrarySystem newLibrarySystem = new LibrarySystem();

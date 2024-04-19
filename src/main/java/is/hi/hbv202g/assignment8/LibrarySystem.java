@@ -4,6 +4,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class that represents the library system.
+ * <p>
+ * This class handles the library system with its books, lendings and users. </p>
+ */
+
 public class LibrarySystem {
     private final List<Book> books;
     private final List<Omnibus> omnibuses;
@@ -17,7 +23,13 @@ public class LibrarySystem {
         users = new ArrayList<User>();
     }
 
-
+    /**
+     * Adds a new book to the library system.
+     *
+     * @param title
+     * @param authors
+     * @throws EmptyAuthorListException
+     */
     public void addBookWithTitleAndAuthorList(String title, ArrayList<Author> authors) throws EmptyAuthorListException {
         if (authors.isEmpty()){
             throw new EmptyAuthorListException("Empty author list");
@@ -26,6 +38,14 @@ public class LibrarySystem {
         books.add(newBook);
     }
 
+    /**
+     * Adds a new book collection to the library system.
+     *
+     * @param title
+     * @param volumes
+     * @param isAvailable
+     * @throws EmptyVolumeListException
+     */
     public void addOmnibus(String title, List<Book> volumes, boolean isAvailable) throws EmptyVolumeListException{
         if (volumes.isEmpty()){
             throw new EmptyVolumeListException("Empty volume list");
@@ -33,14 +53,35 @@ public class LibrarySystem {
         Omnibus newOmnibus = new Omnibus(title, volumes, isAvailable);
         omnibuses.add(newOmnibus);
     }
+
+    /**
+     * Adds a new student user to the library system.
+     *
+     * @param name
+     * @param feePaid
+     */
     public void addStudentUser(String name, boolean feePaid){
         Student newUser = new Student(name, feePaid);
         users.add(newUser);
     }
+
+    /**
+     * Adds a new faculty member user to the library system.
+     *
+     * @param name
+     * @param department
+     */
     public void addFacultyMemberUser(String name, String department){
         FacultyMember newUser = new FacultyMember(name, department);
         users.add(newUser);
     }
+
+    /**
+     * Find a book in the library system by its title.
+     *
+     * @param title
+     * @return the book with the given title or null if not found
+     */
     public Book findBookByTitle(String title) {
         for (Book book : books){
             if (book.getTitle().equals(title)){
@@ -50,6 +91,12 @@ public class LibrarySystem {
         return null;
     }
 
+    /**
+     * Find a book collection omnibus in the library system by its title.
+     *
+     * @param title
+     * @return the book collection omnibus with the given title or null if not found
+     */
     public Omnibus findOmnibusByTitle(String title) {
         for (Omnibus omnibus : omnibuses){
             if (omnibus.getTitle().equals(title)){
@@ -58,6 +105,13 @@ public class LibrarySystem {
         }
         return null;
     }
+
+    /**
+     * Find a user in the library system by its name.
+     *
+     * @param name
+     * @return the user with the given name or null if not found
+     */
     public User findUserByName(String name) {
         for (User user : users){
             if (user.getName().equals(name)){
@@ -66,6 +120,14 @@ public class LibrarySystem {
         }
         return null;
     }
+
+    /**
+     * Borrow a book.
+     *
+     * @param user
+     * @param book
+     * @throws UserOrBookDoesNotExistException
+     */
     public void borrowBook(User user, Book book) throws UserOrBookDoesNotExistException{
         if (user instanceof Student){
             Lending newLending = new Lending(book, user);
@@ -80,12 +142,28 @@ public class LibrarySystem {
         }
     }
 
+    /**
+     * Borrow a book collection omnibus.
+     *
+     * @param user
+     * @param omnibus
+     * @throws UserOrBookDoesNotExistException
+     */
     public void borrowOmnibus(User user, Omnibus omnibus) throws UserOrBookDoesNotExistException{
         for(Book book : omnibus.getVolumes()){
             borrowBook(user, book);
         }
         omnibus.isAvailable = false;
     }
+
+    /**
+     * Extend a lending.
+     *
+     * @param facultyMember
+     * @param book
+     * @param newDueDate
+     * @throws UserOrBookDoesNotExistException
+     */
     public void extendLending(FacultyMember facultyMember, Book book, LocalDate newDueDate) throws UserOrBookDoesNotExistException {
         for (Lending lending : lendings){
             if (lending.getBook().equals(book) && lending.getUser().equals(facultyMember)){
@@ -95,6 +173,14 @@ public class LibrarySystem {
         }
         throw new UserOrBookDoesNotExistException("Extending not possible");
     }
+
+    /**
+     * Return a book.
+     *
+     * @param user
+     * @param book
+     * @throws UserOrBookDoesNotExistException
+     */
     public void returnBook(User user, Book book) throws UserOrBookDoesNotExistException{
         for (Lending lending : lendings){
             if (lending.getBook().equals(book) && lending.getUser().equals(user)){
@@ -105,6 +191,13 @@ public class LibrarySystem {
         throw new UserOrBookDoesNotExistException("Returning not possible");
     }
 
+    /**
+     * Return a book collection omnibus.
+     *
+     * @param user
+     * @param omnibus
+     * @throws UserOrBookDoesNotExistException
+     */
     public void returnOmnibus(User user, Omnibus omnibus) throws UserOrBookDoesNotExistException{
         for(Book book : omnibus.getVolumes()){
             returnBook(user, book);
